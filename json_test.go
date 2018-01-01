@@ -36,7 +36,7 @@ func TestKeyReturnsNilIfKeyDoesNotExist(t *testing.T) {
 	jsonBytes := []byte(SimpleJson)
 	json, _ := j.NewJSON(jsonBytes)
 
-	result, jsonType := json.Key("non_existent_key")
+	result, jsonType, _ := json.Key("non_existent_key")
 
 	assert.Nil(t, result)
 	assert.Equal(t, j.Type(0), jsonType)
@@ -51,7 +51,7 @@ func TestKeyReturnsValueWithTypeJSONObject(t *testing.T) {
 	jsonBytes := []byte(jsonWithJsonObject)
 
 	json, _ := j.NewJSON(jsonBytes)
-	result, jsonType := json.Key("key")
+	result, jsonType, _ := json.Key("key")
 
 	assert.NotNil(t, result)
 	assert.Equal(t, expectedResult, result)
@@ -67,7 +67,7 @@ func TestKeyReturnsValueWithTypeJSONArray(t *testing.T) {
 	jsonBytes := []byte(jsonWithJsonArray)
 
 	json, _ := j.NewJSON(jsonBytes)
-	result, jsonType := json.Key("key")
+	result, jsonType, _ := json.Key("key")
 
 	assert.NotNil(t, result)
 	assert.Equal(t, expectedResult, result)
@@ -80,7 +80,7 @@ func TestKeyReturnsValueWithTypeString(t *testing.T) {
 	jsonBytes := []byte(jsonWithStringValue)
 
 	json, _ := j.NewJSON(jsonBytes)
-	result, jsonType := json.Key("key")
+	result, jsonType, _ := json.Key("key")
 
 	assert.NotNil(t, result)
 	assert.Equal(t, value, result)
@@ -93,9 +93,31 @@ func TestKeyReturnsValueWithTypeInteger(t *testing.T) {
 	jsonBytes := []byte(jsonWithIntegerValue)
 
 	json, _ := j.NewJSON(jsonBytes)
-	result, jsonType := json.Key("key")
+	result, jsonType, _ := json.Key("key")
 
 	assert.NotNil(t, result)
 	assert.Equal(t, expectedResult, result)
 	assert.Equal(t, j.Type(4), jsonType)
 }
+
+func TestKeyReturnsErrorWhenJsonNotObject(t *testing.T) {
+	jsonArray := `["1","2","3","4"]`
+	jsonBytes := []byte(jsonArray)
+
+	json, _ := j.NewJSON(jsonBytes)
+	result, jsonType, err := json.Key("key")
+	assert.Error(t, err)
+	assert.Nil(t, result)
+	assert.Equal(t, j.Type(0), jsonType)
+
+}
+
+//func TestNextReturnsNextItemInJson(t *testing.T) {
+//
+//	str := `{"key1":"value1","key2":"value2"}`
+//	jsonBytes := []byte(str)
+//
+//	json, _ := j.NewJSON(jsonBytes)
+//	nextItem := json.Next()
+//
+//}

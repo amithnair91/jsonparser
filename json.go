@@ -3,6 +3,7 @@ package json
 import (
 	j "encoding/json"
 	"fmt"
+	"errors"
 )
 
 type Type int
@@ -15,7 +16,7 @@ const (
 )
 
 type JSON struct {
-	content map[string]interface{}
+	content interface{}
 }
 
 type JSONObject struct {
@@ -27,37 +28,79 @@ type JSONArray struct {
 }
 
 func NewJSON(jsonBytes []byte) (json JSON, err error) {
-	var jsonMap map[string]interface{}
-	err = j.Unmarshal(jsonBytes, &jsonMap)
-	fmt.Println(fmt.Sprintf("%v", err))
-	if err != nil {
-		err = fmt.Errorf(fmt.Sprintf("failed to unmarshal json :%v", err))
+	jsonMap, unmarshalError := unmarshallAsJsonObject(jsonBytes)
+
+	if unmarshalError == nil {
+		json = JSON{content: jsonMap,}
 		return
 	}
-	json = JSON{content: jsonMap,}
+
+	jsonArray, unmarshalError := unmarshallAsJsonArray(jsonBytes)
+
+	if unmarshalError == nil {
+		json = JSON{content: jsonArray,}
+		return
+	}
+
+	err = fmt.Errorf("failed to unmarshal json :%v", err)
+
 	return
 }
 
-func (js *JSON) Key(key string) (result interface{}, jsontype Type) {
+func unmarshallAsJsonObject(jsonBytes []byte) (json interface{}, err error) {
+	err = j.Unmarshal(jsonBytes, &json)
+	if err != nil {
+		err = fmt.Errorf(fmt.Sprintf("failed to unmarshal json :%v", err))
+	}
+	return
+}
+
+func unmarshallAsJsonArray(jsonBytes []byte) (json interface{}, err error) {
+	err = j.Unmarshal(jsonBytes, &json)
+	if err != nil {
+		err = fmt.Errorf(fmt.Sprintf("failed to unmarshal json :%v", err))
+	}
+	return
+}
+
+func (js *JSON) Key(key string) (result interface{}, jsontype Type, err error) {
+	fmt.Println(fmt.Sprintf("%#v", js.content))
 	jsMap := js.content
-	result = jsMap[key]
+
+	if _, ok := js.content.(map[string]interface{}); ok {
+		result = jsMap.(map[string]interface{})[key]
+		jsontype = findType(result)
+	} else {
+		err = errors.New("json node not of type object")
+	}
+
+	return result, jsontype, err
+}
+
+func (js *JSON) Next(result interface{}) (jsonType Type) {
+
+	return
+}
+
+func findType(result interface{}) (jsonType Type) {
+
 	switch result.(type) {
 	case string:
-		jsontype = String
+		jsonType = String
 	case int:
-		jsontype = Integer
+		jsonType = Integer
 	case float64:
-		jsontype = Integer
+		jsonType = Integer
 	case float32:
-		jsontype = Integer
+		jsonType = Integer
 	case map[string]interface{}:
-		jsontype = Object
+		jsonType = Object
 	case []interface{}:
-		jsontype = Array
+		jsonType = Array
 	default:
-		jsontype = 0
+		jsonType = 0
 	}
-	return result, jsontype
+	return jsonType
 }
 
 func checkIfObject(str interface{}) (isObject bool) {
