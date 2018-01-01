@@ -48,6 +48,8 @@ func (js *JSON) Key(key string) (result interface{}, jsontype JsonType) {
 		jsontype = Integer
 	case float64:
 		jsontype = Integer
+	case float32:
+		jsontype = Integer
 	case map[string]interface{}:
 		jsontype = Object
 	case []interface{}:
