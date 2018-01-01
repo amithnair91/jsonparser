@@ -39,7 +39,7 @@ func TestKeyReturnsNilIfKeyDoesNotExist(t *testing.T) {
 	result, jsonType := json.Key("non_existent_key")
 
 	assert.Nil(t, result)
-	assert.Equal(t, j.JsonType(0), jsonType)
+	assert.Equal(t, j.Type(0), jsonType)
 }
 
 func TestKeyReturnsValueWithTypeJSONObject(t *testing.T) {
@@ -55,7 +55,7 @@ func TestKeyReturnsValueWithTypeJSONObject(t *testing.T) {
 
 	assert.NotNil(t, result)
 	assert.Equal(t, expectedResult, result)
-	assert.Equal(t, j.JsonType(1), jsonType)
+	assert.Equal(t, j.Type(1), jsonType)
 }
 
 func TestKeyReturnsValueWithTypeJSONArray(t *testing.T) {
@@ -71,7 +71,7 @@ func TestKeyReturnsValueWithTypeJSONArray(t *testing.T) {
 
 	assert.NotNil(t, result)
 	assert.Equal(t, expectedResult, result)
-	assert.Equal(t, j.JsonType(2), jsonType)
+	assert.Equal(t, j.Type(2), jsonType)
 }
 
 func TestKeyReturnsValueWithTypeString(t *testing.T) {
@@ -84,7 +84,7 @@ func TestKeyReturnsValueWithTypeString(t *testing.T) {
 
 	assert.NotNil(t, result)
 	assert.Equal(t, value, result)
-	assert.Equal(t, j.JsonType(3), jsonType)
+	assert.Equal(t, j.Type(3), jsonType)
 }
 
 func TestKeyReturnsValueWithTypeInteger(t *testing.T) {
@@ -97,5 +97,5 @@ func TestKeyReturnsValueWithTypeInteger(t *testing.T) {
 
 	assert.NotNil(t, result)
 	assert.Equal(t, expectedResult, result)
-	assert.Equal(t, j.JsonType(4), jsonType)
+	assert.Equal(t, j.Type(4), jsonType)
 }

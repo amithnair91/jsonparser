@@ -5,13 +5,13 @@ import (
 	"fmt"
 )
 
-type JsonType int
+type Type int
 
 const (
-	Object  JsonType = 1
-	Array   JsonType = 2
-	String  JsonType = 3
-	Integer JsonType = 4
+	Object  Type = 1
+	Array   Type = 2
+	String  Type = 3
+	Integer Type = 4
 )
 
 type JSON struct {
@@ -38,7 +38,7 @@ func NewJSON(jsonBytes []byte) (json JSON, err error) {
 	return
 }
 
-func (js *JSON) Key(key string) (result interface{}, jsontype JsonType) {
+func (js *JSON) Key(key string) (result interface{}, jsontype Type) {
 	jsMap := js.content
 	result = jsMap[key]
 	switch result.(type) {
