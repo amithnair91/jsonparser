@@ -43,24 +43,19 @@ func (js *JSON) Key(key string) (result interface{}, jsontype JsonType) {
 	result = jsMap[key]
 	switch result.(type) {
 	case string:
-		isObject := checkIfObject(result)
-		if isObject {
-			jsontype = Object
-		} else {
-			jsontype = String
-		}
+		jsontype = String
 	case int:
+		jsontype = Integer
+	case float64:
+		jsontype = Integer
+	case map[string]interface{}:
+		jsontype = Object
+	case []interface{}:
 		jsontype = Array
-		isArray := checkIfArray(result)
-		if isArray {
-			jsontype = Array
-		} else {
-			jsontype = Integer
-		}
 	default:
 		jsontype = 0
 	}
-	return result,jsontype
+	return result, jsontype
 }
 
 func checkIfObject(str interface{}) (isObject bool) {
